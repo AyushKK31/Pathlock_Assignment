@@ -1,0 +1,69 @@
+Problem Statement: Basic Task Manager
+
+Objective:
+The goal of this project is to design and develop a simple full-stack Task Management application using C# (.NET 8) for the backend and React with TypeScript for the frontend. The application should allow users to create, view, update, and delete tasks, demonstrating an understanding of RESTful API development and frontend integration.
+
+Project Description:
+You are required to build a Basic Task Manager that enables users to manage their daily tasks efficiently. The application will provide functionality to:
+
+View a list of existing tasks
+
+Add a new task with a description
+
+Mark a task as completed or uncompleted
+
+Delete a task
+
+All data will be stored in memory (no database connection needed), and communication between the frontend and backend will be done using RESTful APIs.
+
+Technical Requirements
+
+Backend (C# .NET 8):
+
+Implement a RESTful API using .NET 8 Core.
+
+Use in-memory data storage to store task details.
+
+Create a TaskItem model with the following properties:
+
+Guid Id
+
+string Description
+
+bool IsCompleted
+
+Expose the following API endpoints:
+
+GET /api/tasks → Get all tasks
+
+POST /api/tasks → Add a new task
+
+PUT /api/tasks/{id} → Update an existing task
+
+DELETE /api/tasks/{id} → Delete a task
+
+Frontend (React + TypeScript):
+
+Create a single-page application using React.
+
+Display all tasks in a list format.
+
+Provide a UI for:
+
+Adding a new task
+
+Toggling completion status
+
+Deleting a task
+
+Use Axios or Fetch API for backend communication.
+
+Use React Hooks for state management.
+
+Enhancements (Optional):
+
+Implement task filtering (All / Completed / Active).
+
+Add a basic UI design using Tailwind CSS or Bootstrap.
+
+Store tasks in localStorage to persist data.
