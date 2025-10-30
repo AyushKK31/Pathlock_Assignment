@@ -184,25 +184,10 @@ curl -X DELETE http://localhost:5294/api/tasks/{id}
 - CORS is enabled to allow cross-origin requests from the frontend
 - Both projects use hot-reload for development
 
-## 🎨 Future Enhancements
-
-Potential improvements:
-- [ ] Add task filtering (All / Completed / Active)
-- [ ] Implement localStorage for data persistence
-- [ ] Add Tailwind CSS or Bootstrap for better styling
-- [ ] Add task priority levels
-- [ ] Add due dates for tasks
-- [ ] Implement database persistence (SQL Server, PostgreSQL, etc.)
-- [ ] Add user authentication
-- [ ] Add task categories/tags
-
-## 📄 License
-
-This project is created for educational purposes.
 
 ## 👨‍💻 Author
 
-Created as part of the Pathlock Assignment
+Created by Ayush Kumar Kashyap as part of the Pathlock Assignment
 
 ---
 
