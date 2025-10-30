@@ -70,6 +70,7 @@ builder.Services.AddAuthorization();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISchedulerService, SchedulerService>();
 
 // Configure CORS
 builder.Services.AddCors(options =>

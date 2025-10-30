@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectManager.Api.Data;
 using ProjectManager.Api.DTOs;
 using ProjectManager.Api.Models;
+using ProjectManager.Api.Services;
 
 namespace ProjectManager.Api.Controllers;
 
@@ -14,10 +15,12 @@ namespace ProjectManager.Api.Controllers;
 public class ProjectsController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly ISchedulerService _schedulerService;
 
-    public ProjectsController(AppDbContext context)
+    public ProjectsController(AppDbContext context, ISchedulerService schedulerService)
     {
         _context = context;
+        _schedulerService = schedulerService;
     }
 
     private int GetUserId()
@@ -76,7 +79,9 @@ public class ProjectsController : ControllerBase
                 DueDate = t.DueDate,
                 IsCompleted = t.IsCompleted,
                 CreatedAt = t.CreatedAt,
-                ProjectId = t.ProjectId
+                ProjectId = t.ProjectId,
+                EstimatedHours = t.EstimatedHours,
+                Dependencies = System.Text.Json.JsonSerializer.Deserialize<List<string>>(t.Dependencies) ?? new List<string>()
             }).OrderBy(t => t.IsCompleted).ThenByDescending(t => t.CreatedAt).ToList()
         };
 
@@ -133,5 +138,39 @@ public class ProjectsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/schedule")]
+    public async Task<ActionResult<ScheduleResponseDto>> ScheduleProject(int id, [FromBody] ScheduleRequestDto request)
+    {
+        var userId = GetUserId();
+
+        // Verify project belongs to user
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+
+        if (project == null)
+        {
+            return NotFound(new { message = "Project not found" });
+        }
+
+        if (request.Tasks == null || request.Tasks.Count == 0)
+        {
+            return BadRequest(new { message = "No tasks provided for scheduling" });
+        }
+
+        try
+        {
+            var recommendedOrder = _schedulerService.CalculateOptimalOrder(request.Tasks);
+            
+            return Ok(new ScheduleResponseDto
+            {
+                RecommendedOrder = recommendedOrder
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

@@ -1,0 +1,34 @@
+Problem Statement: Smart Scheduler API
+
+Objective:
+Design and implement an intelligent scheduling endpoint that helps users automatically plan their work by determining the optimal order of task execution based on dependencies and deadlines.
+
+Description:
+You are required to build a scheduling feature for a project management system. This feature should analyze a list of tasks, their estimated completion hours, dependencies, and due dates, and return an optimized order in which tasks should be completed.
+The system should ensure that dependent tasks are completed before their successors and that the overall schedule respects task deadlines.
+
+Endpoint Specification:
+POST /api/v1/projects/{projectId}/schedule
+
+Input Example:
+{"tasks": [
+{ "title": "Design API", "estimatedHours": 5, "dueDate": "2025-10-25", "dependencies": [] },
+{ "title": "Implement Backend", "estimatedHours": 12, "dueDate": "2025-10-28", "dependencies": ["Design API"] },
+{ "title": "Build Frontend", "estimatedHours": 10, "dueDate": "2025-10-30", "dependencies": ["Design API"] },
+{ "title": "End-to-End Test", "estimatedHours": 8, "dueDate": "2025-10-31", "dependencies": ["Implement Backend", "Build Frontend"] }
+]}
+
+Expected Output Example:
+{"recommendedOrder": ["Design API", "Implement Backend", "Build Frontend", "End-to-End Test"]}
+
+Additional Requirements:
+
+Implement loading indicators and provide real-time user feedback.
+
+Ensure a mobile-friendly design for accessibility.
+
+Support deployment on suitable environments such as:
+
+Backend: Render, Railway, or Azure
+
+Frontend: Vercel or Netlify

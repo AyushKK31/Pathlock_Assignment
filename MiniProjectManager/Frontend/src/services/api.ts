@@ -8,6 +8,8 @@ import {
   Task,
   CreateTask,
   UpdateTask,
+  ScheduleRequest,
+  ScheduleResponse,
 } from '../types';
 
 const API_URL = 'http://localhost:5000/api';
@@ -109,6 +111,16 @@ class ApiService {
     if (!response.ok) {
       throw new Error('Failed to delete task');
     }
+  }
+
+  // Schedule endpoint
+  async scheduleProject(projectId: number, request: ScheduleRequest): Promise<ScheduleResponse> {
+    const response = await fetch(`${API_URL}/projects/${projectId}/schedule`, {
+      method: 'POST',
+      headers: this.getAuthHeader(),
+      body: JSON.stringify(request),
+    });
+    return this.handleResponse<ScheduleResponse>(response);
   }
 }
 

@@ -17,6 +17,11 @@ public class TaskItem
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Smart Scheduler fields
+    public decimal EstimatedHours { get; set; } = 0;
+
+    public string Dependencies { get; set; } = string.Empty; // JSON array of task titles
+
     // Foreign key
     [Required]
     public int ProjectId { get; set; }

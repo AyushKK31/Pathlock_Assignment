@@ -49,6 +49,8 @@ public class TasksController : ControllerBase
         {
             Title = createTaskDto.Title,
             DueDate = createTaskDto.DueDate,
+            EstimatedHours = createTaskDto.EstimatedHours,
+            Dependencies = System.Text.Json.JsonSerializer.Serialize(createTaskDto.Dependencies ?? new List<string>()),
             ProjectId = projectId,
             CreatedAt = DateTime.UtcNow
         };
@@ -63,7 +65,9 @@ public class TasksController : ControllerBase
             DueDate = task.DueDate,
             IsCompleted = task.IsCompleted,
             CreatedAt = task.CreatedAt,
-            ProjectId = task.ProjectId
+            ProjectId = task.ProjectId,
+            EstimatedHours = task.EstimatedHours,
+            Dependencies = System.Text.Json.JsonSerializer.Deserialize<List<string>>(task.Dependencies) ?? new List<string>()
         };
 
         return CreatedAtAction(nameof(GetTask), new { taskId = task.Id }, taskDto);
@@ -90,7 +94,9 @@ public class TasksController : ControllerBase
             DueDate = task.DueDate,
             IsCompleted = task.IsCompleted,
             CreatedAt = task.CreatedAt,
-            ProjectId = task.ProjectId
+            ProjectId = task.ProjectId,
+            EstimatedHours = task.EstimatedHours,
+            Dependencies = System.Text.Json.JsonSerializer.Deserialize<List<string>>(task.Dependencies) ?? new List<string>()
         };
 
         return Ok(taskDto);
@@ -131,6 +137,16 @@ public class TasksController : ControllerBase
             task.IsCompleted = updateTaskDto.IsCompleted.Value;
         }
 
+        if (updateTaskDto.EstimatedHours.HasValue)
+        {
+            task.EstimatedHours = updateTaskDto.EstimatedHours.Value;
+        }
+
+        if (updateTaskDto.Dependencies != null)
+        {
+            task.Dependencies = System.Text.Json.JsonSerializer.Serialize(updateTaskDto.Dependencies);
+        }
+
         await _context.SaveChangesAsync();
 
         var taskDto = new TaskDto
@@ -140,7 +156,9 @@ public class TasksController : ControllerBase
             DueDate = task.DueDate,
             IsCompleted = task.IsCompleted,
             CreatedAt = task.CreatedAt,
-            ProjectId = task.ProjectId
+            ProjectId = task.ProjectId,
+            EstimatedHours = task.EstimatedHours,
+            Dependencies = System.Text.Json.JsonSerializer.Deserialize<List<string>>(task.Dependencies) ?? new List<string>()
         };
 
         return Ok(taskDto);

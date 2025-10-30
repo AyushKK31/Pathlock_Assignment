@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ProjectDetail, Task, CreateTask, UpdateTask } from '../types';
+import { ProjectDetail, Task, CreateTask, UpdateTask, ScheduleRequest } from '../types';
 import api from '../services/api';
 import './ProjectDetail.css';
 
@@ -9,10 +9,18 @@ const ProjectDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [project, setProject] = useState<ProjectDetail | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [newTask, setNewTask] = useState<CreateTask>({ title: '', dueDate: '' });
+  const [newTask, setNewTask] = useState<CreateTask>({ 
+    title: '', 
+    dueDate: '', 
+    estimatedHours: 0,
+    dependencies: []
+  });
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [scheduledOrder, setScheduledOrder] = useState<string[]>([]);
+  const [scheduling, setScheduling] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -42,11 +50,41 @@ const ProjectDetailPage: React.FC = () => {
         ...project,
         tasks: [...project.tasks, created],
       });
-      setNewTask({ title: '', dueDate: '' });
+      setNewTask({ title: '', dueDate: '', estimatedHours: 0, dependencies: [] });
       setShowModal(false);
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create task');
+    }
+  };
+
+  const handleScheduleProject = async () => {
+    if (!project || project.tasks.length === 0) {
+      setError('No tasks to schedule');
+      return;
+    }
+
+    setScheduling(true);
+    setError('');
+
+    try {
+      const scheduleRequest: ScheduleRequest = {
+        tasks: project.tasks.map((task) => ({
+          title: task.title,
+          estimatedHours: task.estimatedHours || 0,
+          dueDate: task.dueDate || undefined,
+          dependencies: task.dependencies || [],
+        })),
+      };
+
+      const response = await api.scheduleProject(project.id, scheduleRequest);
+      setScheduledOrder(response.recommendedOrder);
+      setShowSchedule(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to calculate schedule');
+      setShowSchedule(false);
+    } finally {
+      setScheduling(false);
     }
   };
 
@@ -128,9 +166,19 @@ const ProjectDetailPage: React.FC = () => {
       <main className="project-main">
         <div className="tasks-header">
           <h2>Tasks</h2>
-          <button onClick={() => setShowModal(true)} className="btn btn-primary">
-            + Add Task
-          </button>
+          <div className="tasks-header-actions">
+            <button 
+              onClick={handleScheduleProject} 
+              className="btn btn-secondary"
+              disabled={scheduling || project.tasks.length === 0}
+              title="Calculate optimal task execution order based on dependencies"
+            >
+              {scheduling ? 'Calculating...' : '📊 Calculate Schedule'}
+            </button>
+            <button onClick={() => setShowModal(true)} className="btn btn-primary">
+              + Add Task
+            </button>
+          </div>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -175,11 +223,23 @@ const ProjectDetailPage: React.FC = () => {
                       {task.title}
                     </span>
                   )}
-                  {task.dueDate && (
-                    <span className="task-due-date">
-                      Due: {new Date(task.dueDate).toLocaleDateString()}
-                    </span>
-                  )}
+                  <div className="task-metadata">
+                    {task.dueDate && (
+                      <span className="task-due-date">
+                        📅 Due: {new Date(task.dueDate).toLocaleDateString()}
+                      </span>
+                    )}
+                    {task.estimatedHours && task.estimatedHours > 0 && (
+                      <span className="task-hours">
+                        ⏱️ {task.estimatedHours}h
+                      </span>
+                    )}
+                    {task.dependencies && task.dependencies.length > 0 && (
+                      <span className="task-dependencies">
+                        🔗 {task.dependencies.length} dep{task.dependencies.length > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <button
                   onClick={() => handleDeleteTask(task.id)}
@@ -190,6 +250,55 @@ const ProjectDetailPage: React.FC = () => {
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {showSchedule && scheduledOrder.length > 0 && (
+          <div className="schedule-results">
+            <div className="schedule-header">
+              <h3>📋 Recommended Task Order</h3>
+              <button 
+                onClick={() => setShowSchedule(false)} 
+                className="btn btn-secondary btn-sm"
+              >
+                Hide Schedule
+              </button>
+            </div>
+            <p className="schedule-description">
+              Based on task dependencies and due dates, here's the optimal execution order:
+            </p>
+            <ol className="scheduled-tasks-list">
+              {scheduledOrder.map((taskTitle, index) => {
+                const task = project.tasks.find(t => t.title === taskTitle);
+                return (
+                  <li key={index} className="scheduled-task-item">
+                    <span className="scheduled-task-number">{index + 1}</span>
+                    <div className="scheduled-task-details">
+                      <span className="scheduled-task-title">{taskTitle}</span>
+                      {task && (
+                        <div className="scheduled-task-meta">
+                          {task.estimatedHours && task.estimatedHours > 0 && (
+                            <span className="scheduled-task-hours">
+                              ⏱️ {task.estimatedHours}h
+                            </span>
+                          )}
+                          {task.dueDate && (
+                            <span className="scheduled-task-due">
+                              📅 Due: {new Date(task.dueDate).toLocaleDateString()}
+                            </span>
+                          )}
+                          {task.dependencies && task.dependencies.length > 0 && (
+                            <span className="scheduled-task-deps">
+                              🔗 Depends on: {task.dependencies.join(', ')}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         )}
       </main>
@@ -220,6 +329,43 @@ const ProjectDetailPage: React.FC = () => {
                   value={newTask.dueDate}
                   onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="estimatedHours">Estimated Hours</label>
+                <input
+                  type="number"
+                  id="estimatedHours"
+                  value={newTask.estimatedHours || 0}
+                  onChange={(e) => setNewTask({ ...newTask, estimatedHours: parseFloat(e.target.value) || 0 })}
+                  min="0"
+                  step="0.5"
+                  placeholder="0"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="dependencies">Dependencies</label>
+                <select
+                  id="dependencies"
+                  multiple
+                  value={newTask.dependencies || []}
+                  onChange={(e) => {
+                    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                    setNewTask({ ...newTask, dependencies: selectedOptions });
+                  }}
+                  size={Math.min(project.tasks.length, 5)}
+                  className="dependencies-select"
+                >
+                  {project.tasks.map((task) => (
+                    <option key={task.id} value={task.title}>
+                      {task.title}
+                    </option>
+                  ))}
+                </select>
+                <small className="form-hint">
+                  Hold Ctrl (Cmd on Mac) to select multiple tasks
+                </small>
               </div>
 
               <div className="modal-actions">
