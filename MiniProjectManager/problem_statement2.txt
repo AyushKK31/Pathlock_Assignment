@@ -1,0 +1,100 @@
+Problem Statement: Mini Project Manager
+
+Objective:
+The goal of this project is to develop a more advanced full-stack web application that demonstrates user authentication, entity relationships, routing, and modular code structure. The system should allow users to register, log in, create projects, and manage tasks within those projects.
+
+Business Context:
+You are required to build a minimal project management system where users can register, log in, create projects, and manage multiple tasks under each project. Each user should have access only to their own data after authentication.
+
+Core Features
+
+Authentication:
+
+Implement user registration and login using JWT (JSON Web Tokens).
+
+After login, users should only be able to access their own data.
+
+Projects:
+Each user can manage multiple projects. A project should include:
+
+Title (required, 3–100 characters)
+
+Description (optional, up to 500 characters)
+
+Creation date (set automatically)
+
+Tasks:
+Each project can have multiple tasks. A task should include:
+
+Title (required)
+
+Due date (optional)
+
+Completion status
+
+A reference to its parent project
+
+Backend Requirements (C# .NET 8):
+
+Build a REST API using .NET 8 Core and Entity Framework Core.
+
+Use either in-memory storage or SQLite for persistence.
+
+Implement authentication using JWT.
+
+Use DataAnnotations for input validation.
+
+Apply separation of concerns (DTOs, services, models, controllers).
+
+API Endpoints
+
+Auth:
+
+POST /api/auth/register
+
+POST /api/auth/login
+
+Projects:
+
+GET /api/projects
+
+POST /api/projects
+
+GET /api/projects/{id}
+
+DELETE /api/projects/{id}
+
+Tasks:
+
+POST /api/projects/{projectId}/tasks
+
+PUT /api/tasks/{taskId}
+
+DELETE /api/tasks/{taskId}
+
+Frontend Requirements (React + TypeScript):
+
+Implement a web application with the following pages:
+
+Login/Register page
+
+Dashboard (list of projects)
+
+Project Details (task list view)
+
+Functionality includes:
+
+Create and delete projects
+
+Add, update, and delete tasks
+
+Toggle task completion
+
+Handle form validation and errors
+
+Store and reuse JWT for authenticated requests
+
+Use React Router for navigation
+
+Time Estimate:
+8–12 hours

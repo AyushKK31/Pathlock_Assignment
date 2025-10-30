@@ -1,0 +1,57 @@
+.project-detail-container { min-height: calc(100vh - 48px); background: transparent }
+
+.loading, .error { display:flex; align-items:center; justify-content:center; min-height:40vh; color:var(--muted) }
+
+.project-header { padding: 1.25rem 0; display:flex; gap:1rem; align-items:flex-start }
+
+.btn-back { background:none; border:none; color:var(--accent); font-size:0.95rem; cursor:pointer }
+.btn-back:hover { color:var(--accent-600) }
+
+.project-info h1 { margin:0 0 0.35rem 0; color:#0f172a }
+.project-description { color:var(--muted); margin-bottom:0.5rem }
+
+.project-stats { display:flex; gap:1.25rem; font-size:0.9rem; color:var(--muted) }
+
+.project-main { max-width:900px; margin:0 auto; padding:1rem }
+
+.tasks-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem }
+.tasks-header h2 { margin:0 }
+
+.tasks-list { display:flex; flex-direction:column; gap:0.65rem }
+
+.task-item { display:flex; gap:0.75rem; align-items:center; padding:0.9rem; border-radius:10px; background:var(--card); box-shadow:0 6px 14px rgba(12,20,44,0.04) }
+.task-item:hover { transform: translateY(-2px) }
+.task-item.completed { opacity:0.75 }
+
+.task-checkbox { width:18px; height:18px }
+
+.task-content { flex:1; display:flex; flex-direction:column; gap:0.2rem }
+
+.task-title { color:#0f172a; font-size:0.98rem }
+.task-item.completed .task-title { text-decoration:line-through; color:var(--muted) }
+
+.task-edit-input { padding:0.4rem 0.6rem; border-radius:8px; border:1px solid #dbeafe; width:100% }
+
+.task-due-date { color:var(--muted); font-size:0.85rem }
+
+.btn-delete-task { background:none; border:none; color:#9ca3af; font-size:1.1rem; cursor:pointer }
+.btn-delete-task:hover { color:var(--danger) }
+
+.empty-state { text-align:center; padding:1.5rem; color:var(--muted); background:transparent }
+
+.modal-overlay { position:fixed; inset:0; background:rgba(2,6,23,0.4); display:flex; align-items:center; justify-content:center; z-index:1000 }
+
+.modal-content { background:var(--card); padding:1rem; border-radius:12px; width:94%; max-width:520px }
+
+.modal-actions { display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.9rem }
+
+.btn { padding:0.6rem 1rem; border-radius:8px }
+.btn-primary { background:linear-gradient(180deg,var(--accent),var(--accent-600)); color:#fff }
+.btn-secondary { background:#f1f5f9; color:#0f172a }
+
+.error-message { padding:0.6rem; margin-bottom:0.8rem; background:#fff5f5; color:var(--danger); border-radius:8px }
+
+@media (max-width: 680px) {
+  .project-main { padding:0.75rem }
+  .task-item { padding:0.75rem }
+}

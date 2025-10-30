@@ -1,0 +1,21 @@
+# Backend
+**/bin/
+**/obj/
+*.db
+*.db-shm
+*.db-wal
+*.user
+
+# Frontend
+**/node_modules/
+**/dist/
+*.local
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

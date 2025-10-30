@@ -1,0 +1,62 @@
+.dashboard-container { min-height: 100vh; background: transparent; }
+
+.dashboard-header {
+  background: transparent;
+  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboard-header h1 { margin: 0; color: #0f172a; font-size: 1.35rem; }
+
+.user-info { margin-left: auto; display:flex; align-items:center; gap:0.75rem }
+
+.user-info span { color: var(--muted); font-weight:600 }
+
+.dashboard-main { max-width: var(--container-width); margin: 0 auto; padding: 1rem; }
+
+.dashboard-actions { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem }
+
+.dashboard-actions h2 { margin:0; color:#0f172a; }
+
+.projects-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:1rem }
+
+.project-card { padding:1rem; border-radius:12px; background:var(--card); box-shadow: 0 8px 20px rgba(12,20,44,0.04); transition: transform 160ms ease, box-shadow 160ms ease }
+
+.project-card:hover { transform: translateY(-6px); box-shadow: 0 14px 35px rgba(12,20,44,0.06) }
+
+.project-header { display:flex; gap:0.5rem; align-items:start }
+
+.project-header h3 { margin:0; color:#0f172a; cursor:pointer; font-size:1.05rem }
+
+.btn-delete { background:none; border:none; color:#9ca3af; font-size:1.25rem; cursor:pointer }
+
+.btn-delete:hover { color:var(--danger) }
+
+.project-description { color:var(--muted); margin:0.5rem 0; min-height:2rem }
+
+.project-footer { display:flex; justify-content:space-between; gap:1rem; align-items:center; margin-top:0.8rem; font-size:0.875rem; color:var(--muted) }
+
+.task-count { color:var(--accent); font-weight:700 }
+
+.empty-state { text-align:center; padding:2rem; color:var(--muted) }
+
+.modal-overlay { position:fixed; inset:0; background-color:rgba(2,6,23,0.4); display:flex; align-items:center; justify-content:center; z-index:1000 }
+
+.modal-content { background:var(--card); padding:1.25rem; border-radius:12px; width:95%; max-width:520px }
+
+.modal-content h2 { margin:0 0 0.75rem 0 }
+
+.modal-content textarea { width:100%; padding:0.75rem; border-radius:8px; border:1px solid #eef2ff; resize:vertical }
+
+.modal-actions { display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem }
+
+.btn-secondary { background:#f1f5f9; color:#0f172a }
+
+.btn-secondary:hover { background:#e6eefc }
+
+@media (max-width: 680px) {
+  .projects-grid { grid-template-columns: 1fr }
+  .dashboard-actions { flex-direction: column; align-items: stretch; gap:0.75rem }
+}
